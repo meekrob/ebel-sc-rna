@@ -1,17 +1,4 @@
 
-### File Naming conventions
-
-Examples: mg3_c_S3_L001_R1_001.fastq, wnv_mg7_S1_L003_R1_001.fastq
-
-
-| control/virus       | S       | L00#        |  Read 1/2 | 001        |
-| ------------------  | ------- | ----------- | ----------| ---------- |
-| mg#\_c or wnv_mg#\_  | S: 1-4  | L001 - L003 | R1/R2     | Always 001 |
-| mg - magnesium <br> wnv - west nile virus | The sample number based on the order that samples are listed in the sample sheet | Lane | Read end ||
-
-[Illumina Naming convention](https://help.basespace.illumina.com/files-used-by-basespace/fastq-files)
-
-
 ### File list
 
 | md5                              |   filename                      | size (bytes) | size   | total reads | total basepairs |
@@ -40,5 +27,18 @@ Examples: mg3_c_S3_L001_R1_001.fastq, wnv_mg7_S1_L003_R1_001.fastq
 | 1ebddae3721463a2c51e7b547e1dc7b2 | wnv_mg8_S2_L003_R2_001.fastq.gz |  33214637300 | 30.93G |         run |           seqtk |
 | a03539ff2593ac111f395c371e44cd40 | wnv_mg9_S2_L002_R1_001.fastq.gz |  36677575025 | 34.16G |         run |           seqtk |
 | 03e68f3d35854ec5ea464ba2241f4b8b | wnv_mg9_S2_L002_R2_001.fastq.gz |  37960933578 | 35.35G |         run |           seqtk |
+
+
+### File Naming conventions
+
+Examples: mg3_c_S3_L001_R1_001.fastq, wnv_mg7_S1_L003_R1_001.fastq
+
+
+| control/virus       | S       | L00#        |  Read 1/2 | 001        |
+| ------------------  | ------- | ----------- | ----------| ---------- |
+| mg#\_c or wnv_mg#\_  | S: 1-4  | L001 - L003 | R1/R2     | Always 001 |
+| mg - magnesium <br> wnv - west nile virus | The sample number based on the order that samples are listed in the sample sheet | Lane | Read end ||
+
+[Illumina Naming convention](https://help.basespace.illumina.com/files-used-by-basespace/fastq-files)
 
 
