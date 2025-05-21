@@ -6,7 +6,7 @@ Examples: mg3_c_S3_L001_R1_001.fastq, wnv_mg7_S1_L003_R1_001.fastq
 
 | control/virus       | S       | L00#        |  Read 1/2 | 001        |
 | ------------------  | ------- | ----------- | ----------| ---------- |
-| mg#_c or wnv_mg#\_  | S: 1-4  | L001 - L003 | R1/R2     | Always 001 |
+| mg#\_c or wnv_mg#\_  | S: 1-4  | L001 - L003 | R1/R2     | Always 001 |
 | mg - magnesium <br> wnv - west nile virus | The sample number based on the order that samples are listed in the sample sheet | Lane | Read end ||
 
 [Illumina Naming convention](https://help.basespace.illumina.com/files-used-by-basespace/fastq-files)
@@ -14,7 +14,31 @@ Examples: mg3_c_S3_L001_R1_001.fastq, wnv_mg7_S1_L003_R1_001.fastq
 
 ### File list
 
-| MD5sum | Filename (Compressed) |
-| ------ | --------------------- |
+| md5                              |   filename                      | size (bytes) | size   | total reads | total basepairs |
+| -------------------------------- | ------------------------------- | ------------ | ------ | ----------- | --------------- |
+| be1b86fd085a4ecc3479fd8210ed41f3 |   mg3_c_S3_L001_R1_001.fastq.gz |  39118323886 | 36.43G |   525148879 |     79297480729 |
+| c838c0933000b6ec853ba246a1f25127 |   mg3_c_S3_L001_R2_001.fastq.gz |  40508643607 | 37.73G |         run |           seqtk |
+| 09f8900902020d473752fcaccfe95b13 |   mg4_c_S4_L001_R1_001.fastq.gz |  37124398154 | 34.57G |         run |           seqtk |
+| 989ba514b47f3a767ce3dc7250ed8047 |   mg4_c_S4_L001_R2_001.fastq.gz |  38588384510 | 35.94G |         run |           seqtk |
+| 493bdbddf2c18eef5324d21898e0a844 |   mg5_c_S2_L003_R1_001.fastq.gz |  42648770053 | 39.72G |         run |           seqtk |
+| 64d70ed984932521855e1e8022675bf0 |   mg5_c_S2_L003_R2_001.fastq.gz |  44677708913 | 41.61G |         run |           seqtk |
+| 7166a712b2496f67c8b85b2bc346bddf |   mg6_c_S3_L002_R1_001.fastq.gz |  41654480838 | 38.79G |         run |           seqtk |
+| 320fe9fe7450f46d057a2e18f6e6c54a |   mg6_c_S3_L002_R2_001.fastq.gz |  43104048850 | 40.14G |         run |           seqtk |
+| 1fe8031b629bea508d9fabd0cef4a83e |   mg8_c_S3_L003_R1_001.fastq.gz |  38349699765 | 35.72G |         run |           seqtk |
+| 36a6738d5f4643e4a100c6adee1ea566 |   mg8_c_S3_L003_R2_001.fastq.gz |  39830393914 | 37.09G |         run |           seqtk |
+| f00c350d4f9775e0a1825e1e2b6dc220 |   mg9_c_S4_L003_R1_001.fastq.gz |  40362004147 | 37.59G |         run |           seqtk |
+| edea9b8bf4da71d71c0fa5220d8e421e |   mg9_c_S4_L003_R2_001.fastq.gz |  41530093167 | 38.68G |         run |           seqtk |
+| 230cbc91934ba7dd665cd76c5b9e055a | wnv_mg3_S1_L001_R1_001.fastq.gz |  39239798339 | 36.54G |         run |           seqtk |
+| 94c2110fa058c0e4aad54cb8dba9b223 | wnv_mg3_S1_L001_R2_001.fastq.gz |  40494335334 | 37.71G |         run |           seqtk |
+| 370327ca9dddf277b4f27f525768f513 | wnv_mg4_S2_L001_R1_001.fastq.gz |  39562731300 | 36.85G |         run |           seqtk |
+| a7899f5a8548c9cdb42e168d5bc19c2f | wnv_mg4_S2_L001_R2_001.fastq.gz |  33249727494 | 30.97G |             |                 |
+| 9aac1003486b11d12dc1d933e15cb1cc | wnv_mg6_S1_L002_R1_001.fastq.gz |  44822408419 | 41.74G |         run |           seqtk |
+| 3c4ff1eaa3c74cc9d449bc2f166211e8 | wnv_mg6_S1_L002_R2_001.fastq.gz |  45605099314 | 42.47G |         run |           seqtk |
+| e0918dd4150c3488ff35ddf8c8bf8c8e | wnv_mg7_S1_L003_R1_001.fastq.gz |  43000369752 | 40.05G |         run |           seqtk |
+| 17e144b5b361b9c32398d23643dade7d | wnv_mg7_S1_L003_R2_001.fastq.gz |  44356546063 | 41.31G |         run |           seqtk |
+| 3af42e1e9b89ddf8accfb70daf0f0aad | wnv_mg8_S2_L003_R1_001.fastq.gz |  30203116535 | 28.13G |         run |           seqtk |
+| 1ebddae3721463a2c51e7b547e1dc7b2 | wnv_mg8_S2_L003_R2_001.fastq.gz |  33214637300 | 30.93G |         run |           seqtk |
+| a03539ff2593ac111f395c371e44cd40 | wnv_mg9_S2_L002_R1_001.fastq.gz |  36677575025 | 34.16G |         run |           seqtk |
+| 03e68f3d35854ec5ea464ba2241f4b8b | wnv_mg9_S2_L002_R2_001.fastq.gz |  37960933578 | 35.35G |         run |           seqtk |
 
 
