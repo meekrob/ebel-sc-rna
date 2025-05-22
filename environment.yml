@@ -1,0 +1,11 @@
+name: ebel
+channels:
+  - defaults
+  - conda-forge
+  - bioconda
+dependencies:
+  - umi_tools
+  - seqtk
+  - samtools
+  - pandas
+prefix: /home/dcking/miniconda3/envs/ebel
