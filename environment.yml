@@ -8,4 +8,7 @@ dependencies:
   - seqtk
   - samtools
   - pandas
+  - biopython
+  - cutadapt
+  - kallisto
 prefix: /home/dcking/miniconda3/envs/ebel
