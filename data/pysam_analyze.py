@@ -52,4 +52,4 @@ with pysam.FastxFile(filename_r1) as fh_r1, pysam.FastxFile(filename_r2) as fh_r
             msg = f" {i+1:,d} sequences processed. {num_viruses_found:,d} viral sequences"
             print(msg + "\b" * len(msg), end='',file=sys.stderr, flush=True)
 
-print(f" {i+1:,d} sequences processed. {num_viruses_found:,d} viral sequences")
+print(f" {i+1:,d} total sequences processed. {num_viruses_found:,d} viral sequences", file=sys.stderr)
