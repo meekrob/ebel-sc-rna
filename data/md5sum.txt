@@ -14,6 +14,8 @@ edea9b8bf4da71d71c0fa5220d8e421e  mg9_c_S4_L003_R2_001.fastq.gz
 94c2110fa058c0e4aad54cb8dba9b223  wnv_mg3_S1_L001_R2_001.fastq.gz
 370327ca9dddf277b4f27f525768f513  wnv_mg4_S2_L001_R1_001.fastq.gz
 a7899f5a8548c9cdb42e168d5bc19c2f  wnv_mg4_S2_L001_R2_001.fastq.gz
+12b887792bd9f7efaa17c709901738fe  wnv_mg5_S1_L003_R1_001.fastq.gz
+9c8b41728c562db0ed16b6bef8b8db7f  wnv_mg5_S1_L003_R2_001.fastq.gz
 9aac1003486b11d12dc1d933e15cb1cc  wnv_mg6_S1_L002_R1_001.fastq.gz
 3c4ff1eaa3c74cc9d449bc2f166211e8  wnv_mg6_S1_L002_R2_001.fastq.gz
 e0918dd4150c3488ff35ddf8c8bf8c8e  wnv_mg7_S1_L003_R1_001.fastq.gz
