@@ -1,0 +1,86 @@
+---
+title: "Barcode Hamming Distance Analysis"
+author: "DCK"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, message = F, warning = F)
+```
+
+```{r CRAN libraries, include=FALSE}
+# Load necessary libraries
+library(tidyverse)
+library(igraph)
+library(dplyr)
+```
+```{r Bioconductor libraries}
+# Not autodetected by Rstudio
+pkgs = c("Biostrings", "pwalign", "ShortRead")
+
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+   install.packages("BiocManager")
+}
+
+for (pkg in pkgs) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    message("Installing ", pkg)
+    BiocManager::install(pkg, ask = FALSE, update = FALSE)
+    
+  }
+  library(pkg, character.only = T) # to load from a variable, character.only = T
+}
+```
+```{r read in reports from python code}
+reports = c('wnv_mg3.tsv', 'wnv_mg4.tsv', 'wnv_mg5.tsv', 'wnv_mg6.tsv', 'wnv_mg7.tsv', 'wnv_mg8.tsv', 'wnv_mg9.tsv')
+header = c('ID', 'cellbarcode', 'umi', 'viral', 'cellbarcode_quality', 'umi_quality', 'viral_quality', 'min_qual_cellbarcode', 'min_qual_umi', 'min_qual_virus')
+
+path_to_reports = "fitz_scripts"
+reports_df = data.frame()
+for (report_file in reports) {
+  report_path = file.path(path_to_reports, report_file)
+  report = read_tsv(report_path, col_names = header)
+  midgut = str_split(report_file, ".tsv")[[1]][1]
+  report$midgut = midgut
+  reports_df = rbind(reports_df, report)
+}
+```
+
+```{r hamming functions}
+hamming_distance <- function(a, b) {
+  return(c(pwalign::stringDist(c(a,b))))
+}
+
+average_hamming <- function(seqs) {
+  return(mean(pwalign::stringDist()))
+}
+
+cluster_barcodes <- function(barcodes, max_distance = 1) {
+  # Ensure barcodes are DNAStringSet
+  barcode_set <- DNAStringSet(barcodes)
+  
+  # Compute pairwise Hamming distances
+  dist_matrix <- pwalign::stringDist(barcode_set, method = "hamming")
+  
+  # Create adjacency matrix: TRUE if distance <= max_distance
+  adj_matrix <- as.matrix(dist_matrix) <= max_distance
+  diag(adj_matrix) <- FALSE  # ignore self-links
+  
+  # Build igraph object
+  g <- graph_from_adjacency_matrix(adj_matrix, mode = "undirected")
+  V(g)$name <- barcodes
+  
+  # Extract connected components (clusters)
+  comps <- components(g)
+  
+  # Return list of clusters as character vectors
+  split(names(comps$membership), comps$membership)
+}
+
+# 🔬 Example
+barcodes <- c("ACGT", "ACGG", "ACGA", "TTTT", "TTTA")
+clusters <- cluster_barcodes(barcodes, max_distance = 1)
+print(clusters)
+
+```
+
