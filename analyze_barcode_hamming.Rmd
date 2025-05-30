@@ -55,7 +55,7 @@ average_hamming <- function(seqs) {
   return(mean(pwalign::stringDist()))
 }
 
-cluster_barcodes <- function(barcodes, max_distance = 1) {
+barcode_consensus_map <- function(barcodes, max_distance = 1) {
   # Ensure barcodes are DNAStringSet
   barcode_set <- DNAStringSet(barcodes)
   
@@ -74,13 +74,32 @@ cluster_barcodes <- function(barcodes, max_distance = 1) {
   comps <- components(g)
   
   # Return list of clusters as character vectors
-  split(names(comps$membership), comps$membership)
+  clusters <- split(names(comps$membership), comps$membership)
+  
+  
+   # Build mapping: barcode -> consensus
+  mapping_list <- lapply(clusters, function(seqs) {
+      consensus <- as.character(consensusString(DNAStringSet(seqs), ambiguityMap = "N"))
+      setNames(rep(consensus, length(seqs)), seqs)
+    })
+  
+  names(mapping_list) <- NULL  # <-- strip outer names to avoid prefixing
+  consensus_map <- unlist(mapping_list)
+  
+  # Ensure all barcodes in input are included (for edge cases)
+  consensus_map[barcodes]
 }
 
 # 🔬 Example
-barcodes <- c("ACGT", "ACGG", "ACGA", "TTTT", "TTTA")
-clusters <- cluster_barcodes(barcodes, max_distance = 1)
-print(clusters)
+# barcodes <- c("ACGT", "ACGG", "ACGA", "TTTT", "TTTA")
+# barcode_map <- barcode_consensus_map(barcodes, max_distance = 1)
+# print(barcode_map)
 
 ```
 
+```{r use consensus cell barcodes}
+system.time({reports_df$cellbarcode_consensus_1 = barcode_consensus_map(reports_df$cellbarcode, 1)})
+system.time({reports_df$cellbarcode_consensus_2 = barcode_consensus_map(reports_df$cellbarcode, 2)})
+system.time({reports_df$cellbarcode_consensus_3 = barcode_consensus_map(reports_df$cellbarcode, 3)})
+
+```
