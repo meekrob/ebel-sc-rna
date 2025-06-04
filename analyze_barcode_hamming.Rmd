@@ -1,8 +1,15 @@
 ---
-title: "Barcode Hamming Distance Analysis"
-author: "DCK"
-output: html_document
+title: "Analysis of viral barcodes in single-cell RNA-seq data."
+author: "David C. King"
+output: 
+  html_document:
+    css: style.css
 ---
+
+## Synopsis
+
+The following is an enumeration of distinct viral barcode sequences, taking into account read quality and considering the subsets defined by different samples (mosquito midguts), cells (cell barcode or whitelist), and UMIs (unique molecular identifiers). However, many distinct viral barcodes are attached to the same UMI with the same cell.
+This observation is unexpected and, at the time of writing, an anomalous observation that we consider unreliable until better understood.  We can detect these anomalies by counting how many distinct viral sequences a UMI maps to within cells, and if this number is greater than 1, all reads for that midgut/cell/UMI combination are discarded.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
@@ -15,24 +22,31 @@ library(igraph)
 library(dplyr)
 library(magrittr)
 ```
-```{r Bioconductor libraries}
+
+```{r Bioconductor libraries, include = FALSE, echo=FALSE}
 # Not autodetected by Rstudio
+
 pkgs = c("Biostrings", "pwalign", "ShortRead")
+cat("Checking for installed Bioconductor packages ", pkgs)
 
 if (!requireNamespace("BiocManager", quietly = TRUE)) {
    install.packages("BiocManager")
 }
 
 for (pkg in pkgs) {
-  if (!requireNamespace(pkg, quietly = TRUE)) {
-    message("Installing ", pkg)
-    BiocManager::install(pkg, ask = FALSE, update = FALSE)
-    
-  }
+    cat("checking for", pkg, "\n")
+    if (!requireNamespace(pkg, quietly = TRUE)) {
+      cat("\tInstalling ", pkg, "\n")
+      BiocManager::install(pkg, ask = FALSE, update = FALSE)
+    }
+
+
   library(pkg, character.only = T) # to load from a variable, character.only = T
+
 }
 ```
-```{r read in reports from python code}
+
+```{r read in reports from python code, cache=TRUE}
 reports = c('wnv_mg3.tsv', 'wnv_mg4.tsv', 'wnv_mg5.tsv', 'wnv_mg6.tsv', 'wnv_mg7.tsv', 'wnv_mg8.tsv', 'wnv_mg9.tsv')
 header = c('ID', 'cellbarcode', 'umi', 'viral', 'cellbarcode_quality', 'umi_quality', 'viral_quality', 'min_qual_cellbarcode', 'min_qual_umi', 'min_qual_virus')
 
@@ -45,6 +59,46 @@ for (report_file in reports) {
   report$midgut = midgut
   reports_df = rbind(reports_df, report)
 }
+
+reports_df %<>% rowwise() %>% mutate(overall_min_quality = min(min_qual_cellbarcode,min_qual_umi,min_qual_virus))
+```
+
+
+# Data 
+
+There are 7 samples (West Nile virus infested mosquito midguts) represented by read pair data in fastq format. After searching for the viral barcode in the second read, the number of usable reads for this analysis is considerably less than the original file.
+
+## After selecting for reads with viral barcode
+
+The script `pysam_analyze.py` iterates over the matched read pair files and outputs the extracted barcodes, their quality string, and the minimum quality of each.
+
+```{r summarize quality}
+reports_df %>% head() %>% knitr::kable("html", table.attr = 'class="monospace"', caption = "pysam_analyze.py output")
+```
+
+## Summary of qualities per midgut
+
+```{r plot counts}
+cumulative_bar_data <- reports_df %>% 
+  dplyr::count(midgut, overall_min_quality) %>% 
+  # Use tidyr::complete to fill in missing value combinations 
+  # (have to fill in for wnv_mg9 not having any reads at 2)
+  complete(midgut, 
+    overall_min_quality = unique(reports_df$overall_min_quality), # this could be 2, but this works generally
+    fill=list(n=0) # 0 observations (n)
+    ) %>%
+  arrange(midgut, -overall_min_quality) %>% 
+  group_by(midgut) %>%  # regroup by midgut only
+  mutate(cumulative = cumsum(n))
+
+cumulative_bar_data %>% select(midgut, overall_min_quality, n) %>% pivot_wider(names_from = overall_min_quality, values_from = n) %>% knitr::kable("pipe", align = "rrrr", caption = "Number of reads with the following lowest quality score")
+
+cumulative_bar_data %>% mutate(quality_threshold = factor(overall_min_quality)) %>% 
+  ggplot(aes(x=quality_threshold, y=cumulative, fill=midgut)) + 
+      geom_bar(stat="identity") + 
+      ylab("Count of reads passing filter") + 
+      xlab("Minimum quality threshold") + 
+      ggtitle("Read pairs where viral barcode is found in read 2")
 ```
 
 ```{r hamming functions}
@@ -98,12 +152,16 @@ barcode_consensus_map <- function(barcodes, max_distance = 1) {
 
 ```
 
-```{r use consensus cell barcodes}
+```{r use consensus cell barcodes, include = FALSE, cache = TRUE}
 system.time({reports_df$cellbarcode_consensus_1 = barcode_consensus_map(reports_df$cellbarcode, 1)})
-system.time({reports_df$cellbarcode_consensus_2 = barcode_consensus_map(reports_df$cellbarcode, 2)})
-system.time({reports_df$cellbarcode_consensus_3 = barcode_consensus_map(reports_df$cellbarcode, 3)})
+#system.time({reports_df$cellbarcode_consensus_2 = barcode_consensus_map(reports_df$cellbarcode, 2)})
+#system.time({reports_df$cellbarcode_consensus_3 = barcode_consensus_map(reports_df$cellbarcode, 3)})
 
 ```
+
+## Viral diversity
+
+At the two top quality scores, 25 and 37, how many distinct viral barcode sequences do we see, and how often do we see them?  For each plot, a single point is a distinct viral barcode, its y value is the number of reads having that barcode, and it is distinct within the groups of the plot.
 
 ```{r viral diversity}
 viral_25 <- reports_df %>% filter(min_qual_virus >= 25) %>% pull(viral) %>% table() %>% as.data.frame() %>% setNames(c("sequence", "count"))
@@ -115,9 +173,16 @@ viral_37$min_qual = 37
 
 overall_virus_counts = rbind(viral_25, viral_37)
 overall_virus_counts$min_qual = factor(overall_virus_counts$min_qual)
-ggplot(overall_virus_counts, aes(x=min_qual, y=count)) + geom_jitter() + scale_y_continuous(trans='log10') + ggtitle("Count of distinct viral sequences across midguts") + 
+ggplot(overall_virus_counts, aes(x=min_qual, y=count)) + 
+  geom_jitter(width=.2) + 
+  scale_y_continuous(trans='log10') + 
+  ggtitle("Count of distinct viral sequences across midguts (cell identity ignored)",
+      subtitle = "No deduplication or UMI checking") + 
   xlab("minimum quality of viral barcode") +
   ylab("count of distinct viral sequence (log10 scale)")
+
+# get the numbers
+overall_virus_counts  %>% select(min_qual, count) %>% table() %>% knitr::kable(caption="Breakdown of distinct viral counts by minimum quality score")
 
 
 reports_df %>% filter(min_qual_virus >= 37) %>% 
@@ -127,14 +192,18 @@ reports_df %>% filter(min_qual_virus >= 37) %>%
   filter(Freq > 0) %>%
   setNames(c("midgut", "sequence", "count")) -> virus_counts_by_midgut
 
-ggplot(virus_counts_by_midgut, aes(x=midgut, y=count)) + geom_jitter() + 
+ggplot(virus_counts_by_midgut, aes(x=midgut, y=count)) + geom_jitter(width = .2) + 
   scale_y_continuous(trans='log10', 
                      breaks=c(1,10,50,100),
                      minor_breaks = c(5,25,75,125)
                      ) + 
-  ggtitle("Count of distinct viral sequences by midgut", subtitle = "Minimum quality = 37") + 
+  ggtitle("Count of distinct viral sequences by midgut (cell identity ignored)", subtitle = "Minimum quality = 37; no deduplication or UMI checking") + 
   xlab("midgut") +
   ylab("count of distinct viral sequence (log10 scale)") + theme(axis.text.x = element_text(angle = 90))
+
+# get the numbers by midgut at 37
+virus_counts_by_midgut  %>% select(midgut, count) %>% table() %>% knitr::kable(caption="Breakdown of distinct viral counts by midgut at min. score of 37")
+
 ```
 ## Deduplication and the UMI
 
@@ -153,7 +222,11 @@ Given any two sequence reads, the following cases are treated this way:
 - Different UMI; different sequence: If UMIs are close (i.e. <= 1 mismatch) AND the attached sequences map to exactly the same place via alignment, the two reads may have been a PCR duplication.
 - Same UMI; different sequence: ????????????????
 
-### prevalence in the sequencing libraries (isolated from C.tarsalis midgut)
+### Anomalous UMI-sequence combinations
+
+Grouping by distinct combinations of UMI and payload will determine uniqueness.
+
+Filter first by quality >= 37, then count instances after grouping by distinct UMIs.  There is no deduplication, so "occurence" includes PCR duplicate read counts.  No breakdown by yet midgut.
 
 ```{r collapse by UMI}
 filtered_qual_37 <- reports_df %>% 
@@ -164,34 +237,62 @@ collapsed <- filtered_qual_37 %>% summarize(viral_seq = dplyr::first(viral),
                                             distinct_viral_sequences = length(unique(viral)),
                                             n = n())
 
-uniqueness <- table(collapsed$distinct_viral_sequences) %>% as.data.frame() %>% setNames(c("viral_seqs", "occurrence"))
+uniqueness <- table(collapsed$distinct_viral_sequences) %>% as.data.frame() %>% setNames(c("Distinct viral barcode sequences that share a UMI", "occurrence"))
 
 # unique identifiers : unique viral sequences
 n_unique = uniqueness[1,2]
 # unique identifiers : multiple distinct viral sequences
 n_non_unique = sum(uniqueness[[2]]) - n_unique
 
-cat(n_unique, n_non_unique)
+# get the sparse, high counts and bin them to make a more concise table
+which_gte_10  = which(as.integer(uniqueness[[1]]) >= 10)
+sum_gte_10 = sum(uniqueness[which_gte_10, 2])
+
+data.frame(unique_seqs=c(uniqueness[1:10,1], ">= 10"), 
+           count=c(uniqueness[1:10,2], sum_gte_10)
+           ) %>%
+  setNames(c("Distinct viral barcode sequences that share a UMI", "occurrence")) %>% 
+  knitr::kable(caption="How many different viral barcodes share a distinct UMI?")
+```
+### Break apart by midgut
+```{r break apart by midgut, cache = TRUE, include=FALSE}
 
 # produce a tibble where midgut/umi combinations are unique (UMIs can and ARE repeated between midguts)
-collapsed_mg <- filtered_qual_37 %>% ungroup() %>% 
+# calculating the consensus is more time-consuming than just taking a representative (i.e. with dplyr::first(viral))
+# To calculate a consensus with N's, do: consensusString(viral, ambiguity="N")
+# To calculate with IUPAC degenerate symbols, do: consensusString(viral, ambiguity = IUPAC_CODE_MAP, threshold = .25)
+system.time(
+{
+  collapsed_mg <- filtered_qual_37 %>% ungroup() %>% 
   group_by(midgut, umi) %>% 
-  summarize(viral_seq = dplyr::first(viral), 
+  summarize(viral_seq = consensusString(viral, ambiguity = IUPAC_CODE_MAP, threshold = .25), #dplyr::first(viral), 
             distinct_viral_sequences = length(unique(viral)), # number of distinct virus barcodes mapping to a single UMI
-            n = n()                                           # expected to be 1
-  )
+            n = n())                                           # expected to be 1
+  })
+ #   user  system elapsed 
+ # 21.488   0.169  21.714 
+
 # # A tibble: 6 × 5
 # # Groups:   midgut [1]
 #   midgut  umi         viral_seq                         distinct_viral_sequences     n
 #   <chr>   <chr>       <chr>                                                <int> <int>
 # 1 wnv_mg3 AAAACTACCGC CTAACCGTCACTGTTACTGCCGCAACTCTCCTT                        1     1
 
+anomalous <- collapsed_mg %>% filter(distinct_viral_sequences > 1) 
+anomalous %>% 
+  setNames(c("midgut label", "UMI", "viral barcode consensus", "n distinct viral sequences", "n reads")) %>% head() %>%
+  knitr::kable("html", table.attr = 'class="monospace"', caption=sprintf("Ignoring cell membership, %d UMIs are attached to more than one distinct viral barcode sequence", nrow(anomalous)))
+
 # filtered = no anomalous UMI/viral_seq combos
-collapsed_mg_filtered <- collapsed_mg %>% filter(distinct_viral_sequences == 1)
+non_anomalous <- collapsed_mg %>% filter(distinct_viral_sequences == 1)
 ```
 
+### Viral diversity after deduplicating 
+
+After filtering out the anomalous cases, deduplication can be performed by collapsing exact copies of UMI:viral barcode reads into a single row in the table.  
+
 ```{r distinct viral barcodes after dedup}
-collapsed_mg_filtered %>%
+non_anomalous %>%
   select(midgut, viral_seq) %>% 
   table() %>% 
   as.data.frame() %>% 
@@ -206,7 +307,8 @@ collapsed_mg_filtered %>%
 # 1 wnv_mg3 CTAACAGTAACAGTCACTGCCGCTACTCTGCTA     1
 # 2 wnv_mg3 CTAACAGTAACAGTCACTGCCGCTACTCTGCTC     5
 # 3 wnv_mg4 CTAACAGTAACAGTCACTGCCGCTACTCTGCTC     1
-head(virus_counts_by_midgut_dedup) 
+top_rows = 2
+virus_counts_by_midgut_dedup %>% group_by(midgut) %>% arrange(-count) %>%  slice_head(n = top_rows) %>% knitr::kable("html", table.attr = 'class="monospace"', caption=sprintf("Top %d distinct viral barcodes per midgut", top_rows))
 ```
 
 ```{r plot distinct virus per mg}
@@ -218,6 +320,8 @@ ggplot(virus_counts_by_midgut, aes(x=midgut, y=count)) + geom_jitter() +
   ggtitle("Count of distinct viral sequences by midgut AFTER 'dedup'", subtitle = "Minimum quality = 37") + 
   xlab("midgut") +
   ylab("count of distinct viral sequence (log10 scale)") + theme(axis.text.x = element_text(angle = 90))
+
+virus_counts_by_midgut %>% select(midgut, count) %>% table()
 ```
 ### Break out by cell barcode
 ```{r cellbarcode}
@@ -246,6 +350,8 @@ unique_v_by_mg_by_cell <- by_cell_filtered %>%
 midgut_cells <- unique_v_by_mg_by_cell %>% summarize(distinct_viral_seqs = n(), total_umi_count = sum(umi_count))
 table(midgut_cells$distinct_viral_seqs)
 midgut_cells  %>% ggplot(aes(x=midgut, y=distinct_viral_seqs)) + geom_jitter(height=.1, width = .15) + ggtitle("Cells with more than one distinct virus", subtitle = "no whitelisting") + ylab("# of distinct viruses in a cell")
+
+midgut_cells %>% select(midgut, distinct_viral_seqs) %>% table()
 ```
 
 ```{r with whitelisted cells}
@@ -273,4 +379,6 @@ midgut_cells <- unique_v_by_mg_by_cell %>% summarize(distinct_viral_seqs = n(), 
 table(midgut_cells$distinct_viral_seqs)
 
 midgut_cells  %>% ggplot(aes(x=midgut, y=distinct_viral_seqs)) + geom_jitter(height=.1, width = .15) + ggtitle("Cells with more than one distinct virus", subtitle = "whitelist (mismatch>= 1)") + ylab("# of distinct viruses in a cell")
+
+midgut_cells %>% select(midgut, distinct_viral_seqs) %>% table()
 ```
