@@ -200,23 +200,22 @@ overall_virus_counts.tab <- overall_virus_counts %>% select(min_qual, count) %>%
 # get the numbers by midgut at 37
 virus_counts_by_midgut.tab <- virus_counts_by_midgut  %>% select(midgut, count) %>% table() 
 
+threshold = 25
 categories = as.integer(colnames(overall_virus_counts.tab))
-selector = (categories >= 35)
+selector = (categories >= threshold)
 rightside = rowSums(overall_virus_counts.tab[,selector]) 
 leftside = overall_virus_counts.tab[,!selector]
-cbind(leftside,rightside) %>% set_colnames(c(colnames(leftside), ">= 35")) %>% 
+cbind(leftside,rightside) %>% set_colnames(c(colnames(leftside),sprintf( ">= %d", threshold))) %>% 
   knitr::kable(caption="Breakdown of distinct viral counts by minimum quality score")
 
 
 categories = as.integer(colnames(virus_counts_by_midgut.tab))
-selector = (categories >= 35)
+#threshold = 15
+selector = (categories >= threshold)
 rightside = rowSums(virus_counts_by_midgut.tab[,selector]) 
 leftside = virus_counts_by_midgut.tab[,!selector]
-cbind(leftside,rightside) %>% set_colnames(c(colnames(leftside), ">= 35")) %>% 
+cbind(leftside,rightside) %>% set_colnames(c(colnames(leftside), sprintf(">= %d", threshold))) %>% 
   knitr::kable(caption="Breakdown of distinct viral counts by midgut at min. score of 37")
-
-
-
 
 ```
 ## Deduplication and the UMI
@@ -337,6 +336,9 @@ ggplot(virus_counts_by_midgut, aes(x=midgut, y=count)) + geom_jitter() +
 
 virus_counts_by_midgut %>% select(midgut, count) %>% table()
 ```
+
+## Viral diversity within cells
+
 ### Break out by cell barcode
 ```{r cellbarcode}
 
@@ -365,10 +367,10 @@ midgut_cells <- unique_v_by_mg_by_cell %>% summarize(distinct_viral_seqs = n(), 
 table(midgut_cells$distinct_viral_seqs)
 midgut_cells  %>% ggplot(aes(x=midgut, y=distinct_viral_seqs)) + geom_jitter(height=.1, width = .15) + ggtitle("Cells with more than one distinct virus", subtitle = "no whitelisting") + ylab("# of distinct viruses in a cell")
 
-midgut_cells %>% select(midgut, distinct_viral_seqs) %>% table()
+midgut_cells %>% select(midgut, distinct_viral_seqs) %>% table() %>% t() %>% knitr::kable(row.names=T, caption = "Numbers for the plot above")
 ```
 
-```{r with whitelisted cells}
+```{r with whitelisted cells, include = FALSE}
 # produce a tibble where midgut/cell/umi combinations are unique
 by_cell <- filtered_qual_37 %>% ungroup() %>% 
   group_by(midgut, cellbarcode_consensus_1, umi) %>% 
@@ -382,7 +384,7 @@ by_cell_dedup <- by_cell_filtered %>%
          umi_viral_seq = paste(umi, viral_seq, sep="_"))
 head(by_cell_dedup)
 
-by_cell_filtered %>% ungroup() %>% group_by(midgut, cellbarcode_consensus_1, viral_seq) %>% summarize(n_unique_viruses = n())  %>% pull(n_unique_viruses) %>% table()
+by_cell_filtered %>% ungroup() %>% group_by(midgut, cellbarcode_consensus_1, viral_seq) %>% summarize(n_unique_viruses = n())  %>% pull(n_unique_viruses) %>% table() 
 
 unique_v_by_mg_by_cell <- by_cell_filtered %>% 
   ungroup() %>% 
@@ -390,9 +392,14 @@ unique_v_by_mg_by_cell <- by_cell_filtered %>%
   summarize(umi_count = n())
 
 midgut_cells <- unique_v_by_mg_by_cell %>% summarize(distinct_viral_seqs = n(), total_umi_count = sum(umi_count))
-table(midgut_cells$distinct_viral_seqs)
 
-midgut_cells  %>% ggplot(aes(x=midgut, y=distinct_viral_seqs)) + geom_jitter(height=.1, width = .15) + ggtitle("Cells with more than one distinct virus", subtitle = "whitelist (mismatch>= 1)") + ylab("# of distinct viruses in a cell")
+midgut_cells  %>% ggplot(aes(x=midgut, y=distinct_viral_seqs)) + geom_jitter(height=.1, width = .15) + ggtitle("Cells with more than one distinct virus", subtitle = "whitelist (mismatch <= 1)") + ylab("# of distinct viruses in a cell")
 
-midgut_cells %>% select(midgut, distinct_viral_seqs) %>% table()
+midgut_cells %>% select(midgut, distinct_viral_seqs) %>% table() %>% t() %>% knitr::kable(row.names=T, caption = "Numbers for the plot above")
 ```
+
+---
+
+## Conclusion
+
+In this dataset, the anomalous UMI/viral barcode sequences do not provide reliable evidence that more than one virus can infect a single cell. The phenomenon occurs at the highest quality standard (37), so cannot be attributed to base calling errors in the sequencing. Until the anomaly is explained, these observations must be filtered from the analysis, leaving few cases of deduplicated reads that indicate a distinct viral origin (ranging from 0 cases to 23 in different midgut samples).  This analysis ignores some considerations. First, there may be evidence outside of the viral barcode that two distinct sequences share a UMI. If that is happening, the number of reliable counts would decrease further. Second, we did not evaluate whether this result is expected by UMI collision. However, an 11 base-pair UMI can have 4,194,304 unique sequences, far outnumbering the number of reads captured for a given cell.  In conclusion, without being able to account for distinct sequences sharing a UMI in this dataset, we are unable to reliably observe viral diversity in a cell.
