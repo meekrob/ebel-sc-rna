@@ -1,0 +1,149 @@
+nohup: ignoring input
+seqtk size into mg4_c_S4_L001_R1_001.fastq.gz.size
+seqtk size <(gzip -dc mg4_c_S4_L001_R1_001.fastq.gz)
+
+real	60m19.393s
+user	44m51.846s
+sys	5m15.852s
+nohup: ignoring input
+seqtk size into mg4_c_S4_L001_R2_001.fastq.gz.size
+seqtk size <(gzip -dc mg4_c_S4_L001_R2_001.fastq.gz)
+
+real	65m2.107s
+user	45m29.185s
+sys	5m32.517s
+nohup: ignoring input
+seqtk size into mg5_c_S2_L003_R1_001.fastq.gz.size
+seqtk size <(gzip -dc mg5_c_S2_L003_R1_001.fastq.gz)
+
+real	74m21.942s
+user	53m40.964s
+sys	6m17.740s
+nohup: ignoring input
+seqtk size into mg5_c_S2_L003_R2_001.fastq.gz.size
+seqtk size <(gzip -dc mg5_c_S2_L003_R2_001.fastq.gz)
+
+real	73m40.040s
+user	53m26.078s
+sys	6m11.766s
+nohup: ignoring input
+seqtk size into mg6_c_S3_L002_R1_001.fastq.gz.size
+seqtk size <(gzip -dc mg6_c_S3_L002_R1_001.fastq.gz)
+
+real	77m47.077s
+user	56m5.970s
+sys	6m18.552s
+nohup: ignoring input
+seqtk size into mg6_c_S3_L002_R2_001.fastq.gz.size
+seqtk size <(gzip -dc mg6_c_S3_L002_R2_001.fastq.gz)
+
+real	81m29.154s
+user	58m12.142s
+sys	6m19.837s
+nohup: ignoring input
+seqtk size into mg8_c_S3_L003_R1_001.fastq.gz.size
+seqtk size <(gzip -dc mg8_c_S3_L003_R1_001.fastq.gz)
+
+real	71m35.695s
+user	50m16.161s
+sys	5m45.063s
+nohup: ignoring input
+seqtk size into mg8_c_S3_L003_R2_001.fastq.gz.size
+seqtk size <(gzip -dc mg8_c_S3_L003_R2_001.fastq.gz)
+
+real	67m51.533s
+user	47m43.121s
+sys	5m39.053s
+nohup: ignoring input
+seqtk size into mg9_c_S4_L003_R1_001.fastq.gz.size
+seqtk size <(gzip -dc mg9_c_S4_L003_R1_001.fastq.gz)
+
+real	74m41.993s
+user	50m56.802s
+sys	5m49.971s
+nohup: ignoring input
+seqtk size into mg9_c_S4_L003_R2_001.fastq.gz.size
+seqtk size <(gzip -dc mg9_c_S4_L003_R2_001.fastq.gz)
+
+real	78m17.960s
+user	57m46.293s
+sys	6m3.938s
+nohup: ignoring input
+seqtk size into wnv_mg3_S1_L001_R1_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg3_S1_L001_R1_001.fastq.gz)
+
+real	75m46.903s
+user	53m6.964s
+sys	6m4.996s
+nohup: ignoring input
+seqtk size into wnv_mg3_S1_L001_R2_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg3_S1_L001_R2_001.fastq.gz)
+
+real	72m49.153s
+user	50m16.279s
+sys	6m2.873s
+nohup: ignoring input
+seqtk size into wnv_mg4_S2_L001_R1_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg4_S2_L001_R1_001.fastq.gz)
+
+real	69m36.917s
+user	49m28.362s
+sys	5m45.505s
+nohup: ignoring input
+make: 'wnv_mg4_S2_L001_R2_001.fastq.gz.size' is up to date.
+nohup: ignoring input
+seqtk size into wnv_mg6_S1_L002_R1_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg6_S1_L002_R1_001.fastq.gz)
+
+real	78m21.076s
+user	57m28.634s
+sys	6m34.615s
+nohup: ignoring input
+seqtk size into wnv_mg6_S1_L002_R2_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg6_S1_L002_R2_001.fastq.gz)
+
+real	75m54.628s
+user	54m54.328s
+sys	6m42.409s
+nohup: ignoring input
+seqtk size into wnv_mg7_S1_L003_R1_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg7_S1_L003_R1_001.fastq.gz)
+
+real	74m22.092s
+user	51m13.490s
+sys	6m15.719s
+nohup: ignoring input
+seqtk size into wnv_mg7_S1_L003_R2_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg7_S1_L003_R2_001.fastq.gz)
+
+real	76m39.334s
+user	54m5.124s
+sys	6m8.939s
+nohup: ignoring input
+seqtk size into wnv_mg8_S2_L003_R1_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg8_S2_L003_R1_001.fastq.gz)
+
+real	58m49.855s
+user	39m33.384s
+sys	5m18.222s
+nohup: ignoring input
+seqtk size into wnv_mg8_S2_L003_R2_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg8_S2_L003_R2_001.fastq.gz)
+
+real	67m26.021s
+user	44m6.498s
+sys	5m33.725s
+nohup: ignoring input
+seqtk size into wnv_mg9_S2_L002_R1_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg9_S2_L002_R1_001.fastq.gz)
+
+real	73m1.004s
+user	50m3.332s
+sys	5m36.127s
+nohup: ignoring input
+seqtk size into wnv_mg9_S2_L002_R2_001.fastq.gz.size
+seqtk size <(gzip -dc wnv_mg9_S2_L002_R2_001.fastq.gz)
+
+real	74m58.267s
+user	51m59.775s
+sys	5m30.883s
