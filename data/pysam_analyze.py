@@ -14,7 +14,6 @@ USAGE examples:
 """
 import sys,re
 import pysam
-import numpy as np
 
 filename_r1 = sys.argv[1]
 filename_r2 = sys.argv[2]
