@@ -1,7 +1,8 @@
 ---
 title: "Analysis of viral barcodes in single-cell RNA-seq data."
 author: "David C. King and Fitz Fitzmeyer"
-output: 
+output:
+  pdf_document: default
   html_document:
     css: style.css
 ---
@@ -78,7 +79,7 @@ There are 7 samples (West Nile virus infested mosquito midguts) represented by r
 
 The script `pysam_analyze.py` iterates over the matched read pair files and outputs the extracted barcodes, their quality string, and the minimum quality of each.
 
-```{r summarize quality}
+```{r summarize quality html-output only, eval = knitr::is_html_output()}
 reports_df %>% head() %>% knitr::kable("html", table.attr = 'class="monospace"', caption = "pysam_analyze.py output")
 ```
 
@@ -198,7 +199,11 @@ g2 <- ggplot(virus_counts_by_midgut, aes(x=midgut, y=count)) + geom_jitter(width
   ylab("") + theme(axis.text.x = element_text(angle = 90)) 
 
 plot_grid(g1,g2)
+```
 
+### Numbers for the above plots
+
+```{r viral diversity tables}
 # get the numbers
 overall_virus_counts.tab <- overall_virus_counts %>% select(min_qual, count) %>% table() 
 # get the numbers by midgut at 37
@@ -210,15 +215,18 @@ selector = (categories >= threshold)
 rightside = rowSums(overall_virus_counts.tab[,selector]) 
 leftside = overall_virus_counts.tab[,!selector]
 cbind(leftside,rightside) %>% set_colnames(c(colnames(leftside),sprintf( ">= %d", threshold))) %>% 
-  knitr::kable(caption="Breakdown of distinct viral counts by minimum quality score")
+  knitr::kable(caption="Breakdown of distinct viral counts by min. quality score")
 
-
+# truncate midgut names by removing (wnv_)
+trunc_rownames = rownames(virus_counts_by_midgut.tab) %>% str_remove("wnv_")
+rownames(virus_counts_by_midgut.tab) <- trunc_rownames
 categories = as.integer(colnames(virus_counts_by_midgut.tab))
 #threshold = 15
 selector = (categories >= threshold)
 rightside = rowSums(virus_counts_by_midgut.tab[,selector]) 
 leftside = virus_counts_by_midgut.tab[,!selector]
-cbind(leftside,rightside) %>% set_colnames(c(colnames(leftside), sprintf(">= %d", threshold))) %>% 
+cbind(leftside,rightside) %>% set_colnames(c(colnames(leftside), 
+                                             sprintf(">= %d", threshold))) %>% 
   knitr::kable(caption="Breakdown of distinct viral counts by midgut at min. score of 37")
 
 ```
@@ -296,9 +304,13 @@ system.time(
 # 1 wnv_mg3 AAAACTACCGC CTAACCGTCACTGTTACTGCCGCAACTCTCCTT                        1     1
 
 anomalous <- collapsed_mg %>% filter(distinct_viral_sequences > 1) 
-anomalous %>% 
+
+if(knitr::is_html_output()) # html only table
+{
+  anomalous %>% 
   setNames(c("midgut label", "UMI", "viral barcode consensus", "n distinct viral sequences", "n reads")) %>% head() %>%
   knitr::kable("html", table.attr = 'class="monospace"', caption=sprintf("Ignoring cell membership, %d UMIs are attached to more than one distinct viral barcode sequence", nrow(anomalous)))
+  }
 
 # filtered = no anomalous UMI/viral_seq combos
 non_anomalous <- collapsed_mg %>% filter(distinct_viral_sequences == 1)
@@ -324,6 +336,9 @@ non_anomalous %>%
 # 1 wnv_mg3 CTAACAGTAACAGTCACTGCCGCTACTCTGCTA     1
 # 2 wnv_mg3 CTAACAGTAACAGTCACTGCCGCTACTCTGCTC     5
 # 3 wnv_mg4 CTAACAGTAACAGTCACTGCCGCTACTCTGCTC     1
+```
+
+```{r top-distinct-barcodes html only, eval = knitr::is_html_output() }
 top_rows = 2
 virus_counts_by_midgut_dedup %>% group_by(midgut) %>% arrange(-count) %>%  slice_head(n = top_rows) %>% knitr::kable("html", table.attr = 'class="monospace"', caption=sprintf("Top %d distinct viral barcodes per midgut", top_rows))
 ```
@@ -351,7 +366,7 @@ pasted %>% knitr::kable(caption = "data for figure above")
 ## Viral diversity within cells
 
 ### Break out by cell barcode
-```{r cellbarcode, include = FALSE}
+```{r cellbarcode, echo = FALSE}
 
 # produce a tibble where midgut/cell/umi combinations are unique
 by_cell <- filtered_qual_37 %>% ungroup() %>% 
@@ -367,7 +382,7 @@ by_cell_dedup <- by_cell_filtered %>%
 head(by_cell_dedup)
 ```
 
-```{r n_unique viruses within a cell, include = FALSE}
+```{r n_unique viruses within a cell, echo = FALSE}
 by_cell_filtered %>% ungroup() %>% group_by(midgut, cellbarcode, viral_seq) %>% summarize(n_unique_viruses = n())  %>% pull(n_unique_viruses) %>% table()
 
 unique_v_by_mg_by_cell <- by_cell_filtered %>% 
@@ -382,7 +397,7 @@ midgut_cells  %>% ggplot(aes(x=midgut, y=distinct_viral_seqs)) + geom_jitter(hei
 midgut_cells %>% select(midgut, distinct_viral_seqs) %>% table() %>% t() %>% knitr::kable(row.names=T, caption = "Numbers for the plot above")
 ```
 
-```{r with whitelisted cells, include = FALSE}
+```{r with whitelisted cells, echo = FALSE}
 # produce a tibble where midgut/cell/umi combinations are unique
 by_cell <- filtered_qual_37 %>% ungroup() %>% 
   group_by(midgut, cellbarcode_consensus_1, umi) %>% 
