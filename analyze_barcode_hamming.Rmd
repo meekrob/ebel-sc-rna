@@ -57,7 +57,7 @@ for (pkg in pkgs) {
 reports = c('wnv_mg3.tsv', 'wnv_mg4.tsv', 'wnv_mg5.tsv', 'wnv_mg6.tsv', 'wnv_mg7.tsv', 'wnv_mg8.tsv', 'wnv_mg9.tsv')
 header = c('ID', 'cellbarcode', 'umi', 'viral', 'cellbarcode_quality', 'umi_quality', 'viral_quality', 'min_qual_cellbarcode', 'min_qual_umi', 'min_qual_virus')
 
-path_to_reports = "fitz_scripts"
+path_to_reports = "reports"
 reports_df = data.frame()
 for (report_file in reports) {
   report_path = file.path(path_to_reports, report_file)
