@@ -2,9 +2,9 @@
 title: "Analysis of viral barcodes in single-cell RNA-seq data."
 author: "David C. King and Fitz Fitzmeyer"
 output:
-  pdf_document: default
   html_document:
     css: style.css
+  pdf_document: default
 ---
 
 ## Synopsis
@@ -14,7 +14,7 @@ This observation is unexpected and, at the time of writing, an anomalous observa
 
 ## Conclusion
 
-In this dataset, the anomalous UMI/viral barcode sequences do not provide reliable evidence that more than one virus can infect a single cell. The phenomenon occurs at the highest quality standard (37), so cannot be attributed to base calling errors in the sequencing. Until the anomaly is explained, these observations must be filtered from the analysis, leaving few cases of deduplicated reads that indicate a distinct viral origin (ranging from 0 cases to 23 in different midgut samples).  This analysis ignores some considerations. First, there may be evidence outside of the viral barcode that two distinct sequences share a UMI. If that is happening, the number of reliable counts would decrease further. Second, we did not evaluate whether this result is expected by UMI collision. However, an 11 base-pair UMI can have 4,194,304 unique sequences, far outnumbering the number of reads captured for a given cell.  In conclusion, without being able to account for distinct sequences sharing a UMI in this dataset, we are unable to reliably observe viral diversity in a cell.
+In this dataset, the anomalous UMI/viral barcode sequences do not provide reliable evidence that more than one virus can infect a single cell. The anomaly occurs at the highest quality standard (37), so cannot be attributed to base calling errors in the sequencing. Until the anomaly is explained, these observations must be filtered from the analysis, leaving few cases of deduplicated reads that indicate a distinct viral origin (ranging from 0 cases to 23 in different midgut samples), out of thousands of single infection cases.  This analysis ignores some considerations. First, there may be evidence outside of the viral barcode that two distinct sequences share a UMI. If that is happening, the number of reliable counts would decrease further. Second, we did not evaluate whether this result is expected by UMI collision. However, an 11 base-pair UMI can have 4,194,304 unique sequences, far outnumbering the number of reads captured for a given cell.  In conclusion, without being able to account for distinct sequences sharing a UMI in this dataset, we are unable to reliably observe viral diversity in a cell.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F, message = F, warning = F)
