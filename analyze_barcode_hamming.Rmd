@@ -422,6 +422,9 @@ midgut_cells <- unique_v_by_mg_by_cell %>% summarize(distinct_viral_seqs = n(), 
 
 midgut_cells  %>% ggplot(aes(x=midgut, y=distinct_viral_seqs)) + geom_jitter(height=.1, width = .15) + ggtitle("Cells with more than one distinct virus", subtitle = "whitelist (mismatch <= 1)") + ylab("# of distinct viruses in a cell")
 
+ggsave("viral_diversity_cells_after_UMI_filtering.pdf")
+ggsave("viral_diversity_cells_after_UMI_filtering.png", scale = .5)
+
 midgut_cells %>% select(midgut, distinct_viral_seqs) %>% table() %>% t() %>% knitr::kable(row.names=T, caption = "Numbers for the plot above")
 ```
 
