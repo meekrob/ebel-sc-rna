@@ -1,10 +1,15 @@
 ## Instructions
 
+For the analysis: pysam\_analyze.py runs on the paired end read files. This directory also contains scripts to get the sizes of the files for reproducibility since the data is too large to be included in this repo. 
+
+Do `md5sum -c md5sum.txt` to check file integrity.  Read and base count are listed in a table in this document.
+
 ### Running the analysis
 
 Create conda environment specified in top level.
 
-For each pair of wnv_* files, do `python pysam_analyze.py reads1.fastq.gz reads2.fastq.gz > output.tsv`
+1. Link or copy fastq.gz files into this directory
+2. For each pair of wnv_* files, do `python pysam_analyze.py reads1.fastq.gz reads2.fastq.gz > output.tsv`
 
 For more information, see the header in pysam\_analyze.py.
 
