@@ -4,11 +4,9 @@ channels:
   - conda-forge
   - bioconda
 dependencies:
-  - umi_tools
   - seqtk
-  - samtools
   - pandas
-  - biopython
-  - cutadapt
-  - kallisto
+  - pysam
+  - jupyterlab
+  - networkx
 prefix: /home/dcking/miniconda3/envs/ebel
