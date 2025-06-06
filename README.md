@@ -1,5 +1,9 @@
 ## Viral Barcode Hunt
 
+### After filtering anomalous UMI/barcode pairs, there are few cells with distinct viral barcodes
+
+![Main figure showing lack of viral diversity after UMI anomaly filtering](/viral_diversity_cells_after_UMI_filtering.png)
+
 ### Installation
 
 Use conda
