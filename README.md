@@ -11,6 +11,7 @@ Use conda
 
 ### Contents:
 
+- **reports/** - Directory to hold the tsv files (output from pysam\_analyze.py; input for analyze_barcode_hamming.Rmd)
 - **data/** - Directory to hold data for processing. It includes checksums and size analysis for provenance and meta data, but fastq files are not checked in due to size.
 - **fitz_scripts/** - Review of work done so far
 - **data/pysam_analyze.py** - Main fastq processing script
