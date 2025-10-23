@@ -1,0 +1,10 @@
+[2025-05-23_10:01:53] xfer-fastq-array 
+SLURM_JOBID=55381
+SLURM_ARRAY_TASK_ID=8
+array_arg=mg6_c_S3_L002_R2_001.fastq.gz
+scp aidlng:ebel_project/viral_tag_problem/data/mg6_c_S3_L002_R2_001.fastq.gz .
+
+real	81m29.921s
+user	0m22.322s
+sys	1m15.072s
+slurmstepd: error: *** JOB 55381 ON node002 CANCELLED AT 2025-05-23T12:02:06 DUE TO TIME LIMIT ***

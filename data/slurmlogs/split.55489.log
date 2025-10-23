@@ -1,0 +1,11 @@
+[2025-05-24_19:33:02] split wnv_mg7_split 5
+mkdir: created directory 'wnv_mg7_split_split'
+split: cannot open 'wnv_mg7_split*_R2_*.fastq' for reading: No such file or directory
+
+real	0m0.001s
+user	0m0.001s
+sys	0m0.000s
+
+real	0m0.002s
+user	0m0.001s
+sys	0m0.000s

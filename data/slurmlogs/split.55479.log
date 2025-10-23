@@ -1,0 +1,18 @@
+[2025-05-24_13:23:31] split wnv_mg4 5
+mkdir: created directory 'wnv_mg4_split'
+
+real	1m41.486s
+user	0m0.004s
+sys	0m12.472s
+
+real	1m41.488s
+user	0m0.004s
+sys	0m12.472s
+
+real	20m59.283s
+user	0m0.083s
+sys	2m28.999s
+
+real	20m59.283s
+user	0m0.083s
+sys	2m29.000s

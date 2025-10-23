@@ -1,0 +1,10 @@
+[2025-05-26_16:31:36] pysam-analyze 
+SLURM_JOBID=55597
+SLURM_ARRAY_TASK_ID=8
+source /nfs/home/dking/miniconda3/bin/activate ebel
+array_arg=8
+python pysam_test.py wnv_mg8_S2_L003_R1_001.fastq wnv_mg8_S2_L003_R2_001.fastq > wnv_mg8.tsv
+
+real	39m13.784s
+user	34m28.301s
+sys	4m11.220s

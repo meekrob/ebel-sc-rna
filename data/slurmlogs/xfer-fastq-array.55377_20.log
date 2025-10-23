@@ -1,0 +1,11 @@
+[2025-05-23_10:01:54] xfer-fastq-array 
+SLURM_JOBID=55393
+SLURM_ARRAY_TASK_ID=20
+array_arg=wnv_mg7_S1_L003_R2_001.fastq.gz
+scp aidlng:ebel_project/viral_tag_problem/data/wnv_mg7_S1_L003_R2_001.fastq.gz .
+kex_exchange_identification: read: Connection reset by peer
+
+real	0m0.009s
+user	0m0.000s
+sys	0m0.006s
+gzip: wnv_mg7_S1_L003_R2_001.fastq.gz: No such file or directory

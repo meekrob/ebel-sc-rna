@@ -1,0 +1,9 @@
+[2025-05-27_16:03:09] xfer-fastq-array 
+SLURM_JOBID=55656
+SLURM_ARRAY_TASK_ID=17
+array_arg=wnv_mg5_S1_L003_R1_001.fastq.gz
+scp aidlng:ebel_project/viral_tag_problem/data/wnv_mg5_S1_L003_R1_001.fastq.gz .
+
+real	14m53.944s
+user	0m20.072s
+sys	0m52.608s

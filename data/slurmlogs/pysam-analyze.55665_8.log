@@ -1,0 +1,11 @@
+[2025-05-27_17:07:57] pysam-analyze 
+SLURM_JOBID=55671
+SLURM_ARRAY_TASK_ID=8
+source /nfs/home/dking/miniconda3/bin/activate ebel
+array_arg=8
+python pysam_analyze.py wnv_mg8_S2_L003_R1_001.fastq wnv_mg8_S2_L003_R2_001.fastq > wnv_mg8.tsv
+ 485,435,325 total sequences processed. 3,121 viral sequences
+
+real	43m21.030s
+user	35m22.933s
+sys	5m30.801s

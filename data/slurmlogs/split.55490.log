@@ -1,0 +1,12 @@
+[2025-05-24_19:34:48] split wnv_mg7 5
+Already did wnv_mg7 => wnv_mg7_split
+time split -d -n 5 wnv_mg7*_R2_*.fastq wnv_mg7_split/wnv_mg7_split_ --additional-suffix=.R2.fastq
+split: cannot open 'wnv_mg7*_R2_*.fastq' for reading: No such file or directory
+
+real	0m0.001s
+user	0m0.000s
+sys	0m0.001s
+
+real	0m0.001s
+user	0m0.000s
+sys	0m0.001s
