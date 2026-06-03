@@ -80,4 +80,25 @@ with pysam.FastxFile(filename_r1) as fh_r1, pysam.FastxFile(filename_r2) as fh_r
 # always print final summary to stderr
 print(f" {i+1:,d} total sequences processed. {num_viruses_found:,d} viral sequences", file=sys.stderr)
 
+
+def parse_barcodes(entry, entry_r2, v_match_s, v_match_e) :
+viral_sequence = entry_r2.sequence[s:e]
+            viral_quality = entry_r2.quality[s:e]
+            
+            # extract barcodes by given positions (0-based; end exclusive)
+            cell_sequence = entry.sequence[:15]
+            umi_sequence  = entry.sequence[15:26]
+            cell_quality = entry.quality[:15]
+            umi_quality  = entry.quality[15:26]
+
+            # minimum qualities with our function above
+            min_cell_quality = min_qual(cell_quality)
+            min_umi_quality = min_qual(umi_quality)
+            min_viral_quality = min_qual(viral_quality)
+
+            # return tuple
+            return entry.name, cell_sequence, umi_sequence, viral_sequence, # sequence strings
+                              cell_quality,  umi_quality,  viral_quality,  # quality strings
+                              min_cell_quality, min_umi_quality, min_viral_quality # min quality (single value)
+                              
 # done
