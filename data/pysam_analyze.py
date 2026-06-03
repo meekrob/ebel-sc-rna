@@ -52,25 +52,10 @@ with pysam.FastxFile(filename_r1) as fh_r1, pysam.FastxFile(filename_r2) as fh_r
         if match:
             s,e = match.start(), match.end()
             num_viruses_found += 1
-            viral_sequence = entry_r2.sequence[s:e]
-            viral_quality = entry_r2.quality[s:e]
             
-            # extract barcodes by given positions (0-based; end exclusive)
-            cell_sequence = entry.sequence[:15]
-            umi_sequence  = entry.sequence[15:26]
-            cell_quality = entry.quality[:15]
-            umi_quality  = entry.quality[15:26]
+            r = parse_barcodes(entry_r1.sequence, entry_r2.sequence, s, e) 
 
-            # minimum qualities with our function above
-            min_cell_quality = min_qual(cell_quality)
-            min_umi_quality = min_qual(umi_quality)
-            min_viral_quality = min_qual(viral_quality)
-
-            # print a tab-separated lines
-            print(entry.name, cell_sequence, umi_sequence, viral_sequence, # sequence strings
-                              cell_quality,  umi_quality,  viral_quality,  # quality strings
-                              min_cell_quality, min_umi_quality, min_viral_quality, # min quality (single value)
-                              sep="\t")
+            print(*r, sep="\t") 
 
         # if running from terminal, print a message every 100,000 reads
         if print_update and (i+1) % 100000 == 0:
@@ -82,8 +67,8 @@ print(f" {i+1:,d} total sequences processed. {num_viruses_found:,d} viral sequen
 
 
 def parse_barcodes(entry, entry_r2, v_match_s, v_match_e) :
-viral_sequence = entry_r2.sequence[s:e]
-            viral_quality = entry_r2.quality[s:e]
+            viral_sequence = entry_r2.sequence[v_match_s:v_match_e]
+            viral_quality = entry_r2.quality[v_match_s:v_match_e]
             
             # extract barcodes by given positions (0-based; end exclusive)
             cell_sequence = entry.sequence[:15]
